@@ -1,0 +1,86 @@
+package new_mail;
+
+import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
+import org.junit.*;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
+
+public class test_new_mail {
+  private WebDriver driver;
+  private String baseUrl;
+  private boolean acceptNextAlert = true;
+  private StringBuffer verificationErrors = new StringBuffer();
+
+  @Before
+  public void setUp() throws Exception {
+	System.setProperty("webdriver.gecko.driver", "C:\\geckodriver.exe");
+    driver = new FirefoxDriver();
+    baseUrl = "https://www.rambler.ru/";
+    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void testUntitledTestCase() throws Exception {
+    driver.get("https://id.rambler.ru/login-20/login");
+    driver.findElement(By.id("login")).click();
+    driver.findElement(By.id("login")).clear();
+    driver.findElement(By.id("login")).sendKeys("DEADushka147@rambler.ru");
+    driver.findElement(By.id("password")).clear();
+    driver.findElement(By.id("password")).sendKeys("Dead963788");
+    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Забыли пароль?'])[1]/following::span[1]")).click();
+    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Игры на Рамблере'])[1]/following::span[1]")).click();
+    driver.get("https://mail.rambler.ru");
+
+    try {
+      assertTrue(isElementPresent(By.xpath("//div[@id='app']/div/div[3]/div[2]/div/div/ul/li/div/a/div/div[2]")));
+    } catch (Error e) {
+      verificationErrors.append(e.toString());
+    }
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    driver.quit();
+    String verificationErrorString = verificationErrors.toString();
+    if (!"".equals(verificationErrorString)) {
+      fail(verificationErrorString);
+    }
+  }
+
+  private boolean isElementPresent(By by) {
+    try {
+      driver.findElement(by);
+      return true;
+    } catch (NoSuchElementException e) {
+      return false;
+    }
+  }
+
+  private boolean isAlertPresent() {
+    try {
+      driver.switchTo().alert();
+      return true;
+    } catch (NoAlertPresentException e) {
+      return false;
+    }
+  }
+
+  private String closeAlertAndGetItsText() {
+    try {
+      Alert alert = driver.switchTo().alert();
+      String alertText = alert.getText();
+      if (acceptNextAlert) {
+        alert.accept();
+      } else {
+        alert.dismiss();
+      }
+      return alertText;
+    } finally {
+      acceptNextAlert = true;
+    }
+  }
+}
